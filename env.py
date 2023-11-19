@@ -12,6 +12,10 @@ from config import (
     LAMBDA_REQUEST_LOC_2,
     MAX_CARS,
     MAX_CAR_SWITCH,
+    ONE_FREE_CAR_MOVEMENT_FROM_1_TO_2,
+    LIMITED_PARKING_SPACE,
+    MAX_CAR_SINGLE_PARKING_SPACE,
+    COST_ADDITIONAL_PARKING_SPACE,
 )
 
 from copy import deepcopy
@@ -58,10 +62,21 @@ class Env:
             ),
         )
 
+        if LIMITED_PARKING_SPACE:
+            corrected_transitions_location_1.rewards[
+                int(MAX_CAR_SINGLE_PARKING_SPACE + 1 + switched_cars) :, :
+            ] -= COST_ADDITIONAL_PARKING_SPACE
+            corrected_transitions_location_2.rewards[
+                int(MAX_CAR_SINGLE_PARKING_SPACE + 1 - switched_cars) :, :
+            ] -= COST_ADDITIONAL_PARKING_SPACE
+
         transitions = self._combine_locations(
             corrected_transitions_location_1, corrected_transitions_location_2
         )
-        transitions.rewards -= MOVING_COST * abs(switched_cars)
+        if ONE_FREE_CAR_MOVEMENT_FROM_1_TO_2 and switched_cars > 0:
+            transitions.rewards -= MOVING_COST * (switched_cars - 1)
+        else:
+            transitions.rewards -= MOVING_COST * abs(switched_cars)
 
         return transitions
 
