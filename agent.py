@@ -50,12 +50,9 @@ class Agent:
                     current_action = self.policy[
                         number_of_cars_loc_1, number_of_cars_loc_2
                     ]
-                    possible_actions = list(
-                        self.env.possible_actions(
-                            number_of_cars_loc_1, number_of_cars_loc_2
-                        )
+                    possible_actions = self.env.possible_actions(
+                        number_of_cars_loc_1, number_of_cars_loc_2
                     )
-                    possible_actions.sort()
                     action_values = {}
                     for action in possible_actions:
                         action_values[action] = self._evaluate_action_state_value(

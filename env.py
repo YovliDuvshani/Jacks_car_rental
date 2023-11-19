@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Tuple, Set
+from typing import Tuple, List
 
 import numpy as np
 
@@ -179,27 +179,20 @@ class Env:
         return probability, expected_partial_reward / probability
 
     @staticmethod
-    def possible_actions(number_of_cars_loc_1, number_of_cars_loc_2) -> Set[int]:
-        negative_possible_actions = {
-            -i
+    def possible_actions(number_of_cars_loc_1, number_of_cars_loc_2) -> List[int]:
+        return [
+            i
             for i in range(
-                min(
+                -min(
                     MAX_CAR_SWITCH,
                     MAX_CARS - number_of_cars_loc_1,
                     number_of_cars_loc_2,
-                )
-                + 1
-            )
-        }
-        positive_possible_actions = {
-            i
-            for i in range(
+                ),
                 min(
                     MAX_CAR_SWITCH,
                     MAX_CARS - number_of_cars_loc_2,
                     number_of_cars_loc_1,
                 )
-                + 1
+                + 1,
             )
-        }
-        return positive_possible_actions.union(negative_possible_actions)
+        ]
